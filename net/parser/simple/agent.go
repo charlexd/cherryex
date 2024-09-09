@@ -2,6 +2,7 @@ package simple
 
 import (
 	"fmt"
+	pomeloPacket "github.com/cherry-game/cherry/net/parser/pomelo/packet"
 	"net"
 	"sync/atomic"
 	"time"
@@ -318,5 +319,44 @@ func (a *Agent) Response(mid uint32, v interface{}) {
 func (a *Agent) AddOnClose(fn OnCloseFunc) {
 	if fn != nil {
 		a.onCloseFunc = append(a.onCloseFunc, fn)
+	}
+}
+
+func (a *Agent) Kick(reason interface{}, closed bool) {
+	bytes, err := a.Serializer().Marshal(reason)
+	if err != nil {
+		clog.Warnf("[sid = %s,uid = %d] Kick marshal fail. [reason = {%+v}, err = %s]",
+			a.SID(),
+			a.UID(),
+			reason,
+			err,
+		)
+	}
+
+	pkg, err := pomeloPacket.Encode(pomeloPacket.Kick, bytes)
+	if err != nil {
+		clog.Warnf("[sid = %s,uid = %d] Kick packet encode error.[reason = %+v, err = %s]",
+			a.SID(),
+			a.UID(),
+			reason,
+			err,
+		)
+		return
+	}
+
+	if clog.PrintLevel(zapcore.DebugLevel) {
+		clog.Debugf("[sid = %s,uid = %d] Kick ok. [reason = %+v, closed = %v]",
+			a.SID(),
+			a.UID(),
+			reason,
+			closed,
+		)
+	}
+
+	// 不进入pending chan，直接踢了
+	a.write(pkg)
+
+	if closed {
+		a.Close()
 	}
 }

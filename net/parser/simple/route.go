@@ -34,11 +34,12 @@ func GetNodeRoute(mid uint32) (*NodeRoute, bool) {
 	return routeActor, found
 }
 
+// 消息路由处理函数
 func DefaultDataRoute(agent *Agent, msg *Message, route *NodeRoute) {
 	session := agent.session
 	session.Mid = msg.MID
 
-	// current node
+	// 在当前节点上进行本地路由
 	if agent.NodeType() == route.NodeType {
 		targetPath := cfacade.NewChildPath(agent.NodeId(), route.ActorID, session.Sid)
 		LocalDataRoute(agent, session, msg, route, targetPath)

@@ -14,22 +14,22 @@ import (
 )
 
 type (
-	actor struct {
+	Actor struct {
 		cactor.Base
 		agentActorID   string
 		connectors     []cfacade.IConnector
 		onNewAgentFunc OnNewAgentFunc
 	}
-
-	OnNewAgentFunc func(newAgent *Agent)
 )
 
-func NewActor(agentActorID string) *actor {
+type OnNewAgentFunc func(newAgent *Agent)
+
+func NewActor(agentActorID string) *Actor {
 	if agentActorID == "" {
 		panic("agentActorID is empty.")
 	}
 
-	parser := &actor{
+	parser := &Actor{
 		agentActorID: agentActorID,
 		connectors:   make([]cfacade.IConnector, 0),
 	}
@@ -38,18 +38,18 @@ func NewActor(agentActorID string) *actor {
 }
 
 // OnInit Actor初始化前触发该函数
-func (p *actor) OnInit() {
+func (p *Actor) OnInit() {
 	p.Remote().Register(ResponseFuncName, p.response)
 }
 
-func (p *actor) Load(app cfacade.IApplication) {
+func (p *Actor) Load(app cfacade.IApplication) {
 	if len(p.connectors) < 1 {
 		panic("Connectors is nil. Please call the AddConnector(...) method add IConnector.")
 	}
 
-	//  Create agent actor
+	//  Create agent SimpleActor
 	if _, err := app.ActorSystem().CreateActor(p.agentActorID, p); err != nil {
-		clog.Panicf("Create agent actor fail. err = %+v", err)
+		clog.Panicf("Create agent SimpleActor fail. err = %+v", err)
 	}
 
 	for _, connector := range p.connectors {
@@ -58,20 +58,20 @@ func (p *actor) Load(app cfacade.IApplication) {
 	}
 }
 
-func (p *actor) AddConnector(connector cfacade.IConnector) {
+func (p *Actor) AddConnector(connector cfacade.IConnector) {
 	p.connectors = append(p.connectors, connector)
 }
 
-func (p *actor) Connectors() []cfacade.IConnector {
+func (p *Actor) Connectors() []cfacade.IConnector {
 	return p.connectors
 }
 
-func (p *actor) AddNodeRoute(mid uint32, nodeRoute *NodeRoute) {
+func (p *Actor) AddNodeRoute(mid uint32, nodeRoute *NodeRoute) {
 	AddNodeRoute(mid, nodeRoute)
 }
 
-// defaultOnConnectFunc 创建新连接时，通过当前agentActor创建child agent actor
-func (p *actor) defaultOnConnectFunc(conn net.Conn) {
+// defaultOnConnectFunc 创建新连接时，通过当前agentActor创建child agent SimpleActor
+func (p *Actor) defaultOnConnectFunc(conn net.Conn) {
 	session := &cproto.Session{
 		Sid:       nuid.Next(),
 		AgentPath: p.Path().String(),
@@ -88,29 +88,29 @@ func (p *actor) defaultOnConnectFunc(conn net.Conn) {
 	agent.Run()
 }
 
-func (p *actor) SetOnNewAgent(fn OnNewAgentFunc) {
+func (p *Actor) SetOnNewAgent(fn OnNewAgentFunc) {
 	p.onNewAgentFunc = fn
 }
 
-func (p *actor) SetHeartbeatTime(t time.Duration) {
+func (p *Actor) SetHeartbeatTime(t time.Duration) {
 	SetHeartbeatTime(t)
 }
 
-func (p *actor) SetWriteBacklog(backlog int) {
+func (p *Actor) SetWriteBacklog(backlog int) {
 	SetWriteBacklog(backlog)
 }
 
-func (p *actor) SetEndian(e binary.ByteOrder) {
+func (p *Actor) SetEndian(e binary.ByteOrder) {
 	SetEndian(e)
 }
 
-func (*actor) SetOnDataRoute(fn DataRouteFunc) {
+func (*Actor) SetOnDataRoute(fn DataRouteFunc) {
 	if fn != nil {
 		onDataRouteFunc = fn
 	}
 }
 
-func (p *actor) response(rsp *cproto.PomeloResponse) {
+func (p *Actor) response(rsp *cproto.PomeloResponse) {
 	agent, found := GetAgent(rsp.Sid)
 	if !found {
 		if clog.PrintLevel(zapcore.DebugLevel) {
