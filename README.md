@@ -6,17 +6,19 @@
 ![cherry tag](https://img.shields.io/github/v/tag/cherry-game/cherry)
 
 - 这是一款分布式的golang游戏服务器框架
-- 基于golang + nats.io + pomelo protocol技术构建
+- 基于golang + actor model技术构建
 - 它具备高性能、可伸缩、分布式、协程分组管理等特点。并且上手简单、易学
 - 让开发者更多的关注游戏业务，高效完成功能实现
-- 文档陆续补充中，欢迎加入一起建设框架
+- 文档陆续补充中，欢迎加入一起建设项目
 
-新接触 Cherry 的朋友，建议从 [示例](#示例) 开始。
+新接触`cherry`的朋友，建议从 [示例](#示例) 开始。
 
-## 新增功能
+## 重要更新
 
 - **新增Actor model实现**
 - **新增simple网络数据包结构(id(4bytes) + dataLen(4bytes) + data(n bytes))**
+- **`examples`示例已从cherry库迁出，新仓库地址: https://github.com/cherry-game/examples**
+- **文档地址: https://cherry-game.github.io/** 
 
 ## 讨论与交流
 
@@ -24,10 +26,11 @@
 
 ## 示例
 
-### 多节点精简版聊天室(❤推荐)
+### 单节点精简版聊天室(❤推荐)
 
-此示例具备的特性如下：
+本示例适合刚接触`cherry`的朋友，用于熟悉项目
 
+具备如下特性：
 - 实现网页客户端，构建http server
 - 选择websocket作为连接器
 - 选择json做为通信格式
@@ -35,11 +38,15 @@
 - 实现发送消息
 - 实现广播消息
 
-源码位于 [examples/demo_chat](examples/demo_chat) 目录，详情进前前往 [环境安装、配置、启动文档](examples/demo_chat/README.md)。
+请参考[环境安装与配置](https://cherry-game.github.io/guides/install-go.html) 进行准备工作
+源码位于[examples/demo_chat](https://github.com/cherry-game/examples/tree/master/demo_chat)仓库
+
 
 ### 多节点分布式游戏示例(❤强烈推荐)
 
-此示例具备的特性如下：
+本示例集群适合作为大部分游戏服务端的基础框架，开发者们可在此示例基础上构建出自己的游戏服务端方案。
+
+特性如下：
 
 - 选择 H5 搭建一个客户端
 - 搭建 Web 服节点
@@ -49,7 +56,8 @@
 - 选择 master 作为发现服务节点
 - 实现部份基础功能(区服列表、多 SDK 帐号体系、帐号注册、帐号登录、创建角色、角色登录)
 
-源码位于 [examples/demo_game_cluster](examples/demo_game_cluster) 目录，详情进前前往 [环境安装、配置、启动文档](examples/demo_game_cluster/README.md)。
+请参考[环境安装与配置](https://cherry-game.github.io/guides/install-go.html) 进行准备工作
+源码位于[examples/demo_cluster](https://github.com/cherry-game/examples/tree/master/demo_cluster)仓库
 
 ## 核心功能
 
