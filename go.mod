@@ -1,4 +1,4 @@
-module github.com/charlexd/cherryex
+module github.com/cherry-game/cherry
 
 go 1.18
 
