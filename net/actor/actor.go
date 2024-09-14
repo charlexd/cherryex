@@ -169,6 +169,7 @@ func (p *Actor) processEvent() {
 	p.event.funcInvoke(eventData)
 }
 
+// invokeFunc invokes func by FuncName in Message
 func (p *Actor) invokeFunc(mb *mailbox, app cfacade.IApplication, fn cfacade.InvokeFunc, m *cfacade.Message) {
 	funcInfo, found := mb.funcMap[m.FuncName]
 	if !found {

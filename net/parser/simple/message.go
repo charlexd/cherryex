@@ -15,12 +15,14 @@ var (
 	dataLength  uint32 = 4096      // data length
 )
 
+// Message 通信协议结构
 type Message struct {
 	MID  uint32
 	Len  uint32
 	Data []byte
 }
 
+// ReadMessage 读取一个消息包
 func ReadMessage(conn net.Conn) (Message, bool, error) {
 	header, err := io.ReadAll(io.LimitReader(conn, int64(headLength)))
 	if err != nil {
@@ -47,6 +49,7 @@ func ReadMessage(conn net.Conn) (Message, bool, error) {
 	return msg, false, nil
 }
 
+// 解析包头
 func parseHeader(header []byte) (Message, error) {
 	msg := Message{}
 
@@ -72,6 +75,7 @@ func parseHeader(header []byte) (Message, error) {
 	return msg, nil
 }
 
+// 打包消息体
 func pack(mid uint32, data []byte) ([]byte, error) {
 	pkg := bytes.NewBuffer([]byte{})
 	binary.Write(pkg, endian, mid)

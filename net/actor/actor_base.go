@@ -38,7 +38,7 @@ func (*Base) OnRemoteReceived(_ *cfacade.Message) (next bool, invoke bool) {
 	return
 }
 
-// OnFindChild 寻找子Actor时触发该函数.开发者可以自定义创建子Actor
+// OnFindChild 寻找子Actor失败后时触发该函数.开发者可以自定义创建子Actor
 func (*Base) OnFindChild(_ *cfacade.Message) (cfacade.IActor, bool) {
 	return nil, false
 }

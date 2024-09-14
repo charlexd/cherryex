@@ -43,6 +43,7 @@ func Response(iActor cfacade.IActor, agentPath, sid string, mid uint32, v interf
 	if err != nil {
 		clog.Warnf("[Response] Marshal error. v = %+v", v)
 		return
+
 	}
 
 	rsp := &cproto.PomeloResponse{
