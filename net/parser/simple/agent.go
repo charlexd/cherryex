@@ -4,6 +4,7 @@ import (
 	"fmt"
 	pomeloPacket "github.com/cherry-game/cherry/net/parser/pomelo/packet"
 	"net"
+	"strconv"
 	"sync/atomic"
 	"time"
 
@@ -84,6 +85,10 @@ func (a *Agent) Session() *cproto.Session {
 
 func (a *Agent) UID() cfacade.UID {
 	return a.session.Uid
+}
+
+func (a *Agent) UIDString() string {
+	return strconv.Itoa(int(a.session.Uid))
 }
 
 func (a *Agent) SID() cfacade.SID {
@@ -312,6 +317,30 @@ func (a *Agent) Response(mid uint32, v interface{}) {
 			a.UID(),
 			mid,
 			v,
+		)
+	}
+}
+
+func (a *Agent) ResponseCode(session *cproto.Session, statusCode int32, isError ...bool) {
+	rsp := &cproto.Response{
+		Code: statusCode,
+	}
+	a.ResponseMID(session.Mid, rsp, isError...)
+}
+
+func (a *Agent) ResponseMID(mid uint32, v interface{}, isError ...bool) {
+	isErr := false
+	if len(isError) > 0 {
+		isErr = isError[0]
+	}
+
+	a.sendPending(mid, v)
+	if clog.PrintLevel(zapcore.DebugLevel) {
+		clog.Debugf("[sid = %s,uid = %d] Response ok. [mid = %d, isError = %v]",
+			a.SID(),
+			a.UID(),
+			mid,
+			isErr,
 		)
 	}
 }
