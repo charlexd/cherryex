@@ -109,15 +109,6 @@ func Filter(slice []interface{}, a func(interface{}) bool) (filterSlice []interf
 	return
 }
 
-func Find(slice []interface{}, a func(interface{}) bool) interface{} {
-	for _, v := range slice {
-		if a(v) {
-			return v
-		}
-	}
-	return nil
-}
-
 // Diff returns diff slice of slice1 - slice2.
 func Diff(slice1, slice2 []interface{}) (diffSlice []interface{}) {
 	for _, v := range slice1 {
