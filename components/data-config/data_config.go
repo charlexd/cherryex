@@ -26,3 +26,23 @@ func GetDataSource(name string) IDataSource {
 func RegisterSource(dataSource IDataSource) {
 	dataSourceMap[dataSource.Name()] = dataSource
 }
+
+// BaseConfig 基础配置
+type BaseConfig struct {
+}
+
+func (p *BaseConfig) Name() string {
+	return "base_config"
+}
+
+func (p *BaseConfig) Init() {
+
+}
+
+func (p *BaseConfig) OnLoad(maps interface{}, reload bool) (int, error) {
+	return 0, nil
+}
+
+func (p *BaseConfig) OnAfterLoad(reload bool) {
+
+}
